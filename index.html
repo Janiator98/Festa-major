@@ -749,7 +749,7 @@ const COL = {Alta:'#d7263d', Mitja:'#f08a00', Baixa:'#2a9d5c'};
 const ORDER = ['Alta','Mitja','Baixa'];
 const map = L.map('map',{zoomControl:false}).setView([41.385,2.155],15);
 L.control.zoom({position:'topleft'}).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:20,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,maxNativeZoom:19,attribution:'Mapa &copy; Esri'}).addTo(map);
 
 const markers = L.layerGroup().addTo(map);
 const secLayer = L.layerGroup().addTo(map);

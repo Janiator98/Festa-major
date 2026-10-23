@@ -709,6 +709,11 @@ header h1 small{display:block;font-weight:400;font-size:12px;opacity:.75;margin-
 .chip.sec{min-width:38px;justify-content:center;padding:6px 10px}
 .sinfo{font-size:12.5px;opacity:.9;min-height:1.2em}
 .sinfo b{font-weight:700}
+.rinfo{margin-top:2px;font-weight:600}
+.chip.route{margin-left:auto}
+.stop-n{background:#fff;color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;font:700 11px var(--font);padding:0 5px;line-height:16px;box-shadow:none}
+.stop-n.first{background:var(--ink);color:#fff}
+.stop-n::before{display:none}
 .pp .sec{font-size:12px;color:var(--muted);margin-top:6px}
 .sec-label{background:var(--ink);color:#fff;border:none;border-radius:999px;font:700 12px var(--font);padding:3px 8px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .sec-label::before{display:none}
@@ -744,7 +749,7 @@ const COL = {Alta:'#d7263d', Mitja:'#f08a00', Baixa:'#2a9d5c'};
 const ORDER = ['Alta','Mitja','Baixa'];
 const map = L.map('map',{zoomControl:false}).setView([41.385,2.155],15);
 L.control.zoom({position:'topleft'}).addTo(map);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:20,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
 
 const markers = L.layerGroup().addTo(map);
 const secLayer = L.layerGroup().addTo(map);
@@ -782,6 +787,43 @@ const shown=new Set(ORDER); const btns={};
 const allBtn=document.createElement('button'); allBtn.className='chip'; allBtn.textContent='Totes'; chips.appendChild(allBtn);
 let selSec=0; // 0 = tots
 const sbtns={};
+// ---- ruta proposada ----
+let routeOn=false;
+const routeLayer=L.layerGroup().addTo(map);
+const ROUTE_COL='#1f2a44';
+// quadrícula de l'Eixample girada ~47° respecte el nord-est: es camina en "L" pels carrers
+const TH=47.4*Math.PI/180, MX=111320*Math.cos(41.385*Math.PI/180), MY=111320;
+const toUV=ll=>{const x=ll.lng*MX, y=ll.lat*MY; return [x*Math.cos(TH)+y*Math.sin(TH), -x*Math.sin(TH)+y*Math.cos(TH)];};
+const fromUV=(u,v)=>{const x=u*Math.cos(TH)-v*Math.sin(TH), y=u*Math.sin(TH)+v*Math.cos(TH); return L.latLng(y/MY,x/MX);};
+const dist=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]);
+function bestPath(pts){ // camí obert més curt que passa per tots els punts (programació dinàmica exacta)
+  const n=pts.length; if(n<=1) return {order:pts.map((_,i)=>i),len:0};
+  const D=pts.map(a=>pts.map(b=>dist(a,b))), N=1<<n;
+  const dp=new Float64Array(N*n).fill(Infinity), par=new Int8Array(N*n).fill(-1);
+  for(let i=0;i<n;i++) dp[(1<<i)*n+i]=0;
+  for(let m=1;m<N;m++) for(let j=0;j<n;j++){ const c=dp[m*n+j]; if(c===Infinity||!(m>>j&1)) continue;
+    for(let k=0;k<n;k++){ if(m>>k&1) continue; const m2=m|1<<k, v=c+D[j][k]; if(v<dp[m2*n+k]){dp[m2*n+k]=v;par[m2*n+k]=j;} } }
+  let end=0; for(let j=1;j<n;j++) if(dp[(N-1)*n+j]<dp[(N-1)*n+end]) end=j;
+  const len=dp[(N-1)*n+end], order=[]; let m=N-1, j=end;
+  while(j>=0){ order.push(j); const p=par[m*n+j]; m^=1<<j; j=p; }
+  return {order:order.reverse(),len};
+}
+function drawRoute(list){
+  if(list.length<2) return 0;
+  const uv=list.map(l=>toUV(l._m.getLatLng()));
+  const {order,len}=bestPath(uv);
+  const line=[];
+  order.forEach((idx,k)=>{ const p=uv[idx];
+    if(k>0){ const q=uv[order[k-1]]; line.push(fromUV(p[0],q[1])); }
+    line.push(list[idx]._m.getLatLng());
+    routeLayer.addLayer(L.tooltip({permanent:true,direction:'top',offset:[0,-9],className:'stop-n'+(k===0?' first':''),interactive:false})
+      .setLatLng(list[idx]._m.getLatLng()).setContent(k===0?'Inici':String(k+1)));
+  });
+  routeLayer.addLayer(L.polyline(line,{color:'#fff',weight:6,opacity:.8,interactive:false}));
+  routeLayer.addLayer(L.polyline(line,{color:ROUTE_COL,weight:3,dashArray:'8 7',interactive:false}));
+  return len;
+}
+const fmtKm=m=>(m/1000).toFixed(1).replace('.',',')+' km', fmtMin=m=>Math.max(1,Math.round(m/75))+' min';
 const applyF=()=>{
   ORDER.forEach(p=>{ const on=shown.has(p); btns[p].classList.toggle('off',!on); btns[p].setAttribute('aria-pressed',on); });
   allBtn.classList.toggle('active',shown.size===ORDER.length);
@@ -790,8 +832,16 @@ const applyF=()=>{
   const vis=LLOCS.filter(l=>l.lat!=null&&shown.has(l.prioritat)&&(!selSec||l.sector===selSec));
   vis.forEach(l=>markers.addLayer(l._m));
   SECTORS.filter(s=>!selSec||s.n===selSec).forEach(s=>{secLayer.addLayer(s.poly);secLayer.addLayer(s.label)});
+  routeLayer.clearLayers(); routeBtn.classList.toggle('active',routeOn); routeBtn.setAttribute('aria-pressed',routeOn);
+  let rtxt='';
+  if(routeOn){
+    const secs=selSec?[selSec]:SECTORS.map(s=>s.n); let tot=0;
+    secs.forEach(n=>{ tot+=drawRoute(vis.filter(l=>l.sector===n)); });
+    rtxt = selSec ? `<div class="rinfo">Ruta proposada: ${fmtKm(tot)} · ~${fmtMin(tot)} caminant</div>`
+                  : `<div class="rinfo">Ruta proposada dins de cada sector (tria'n un per veure-la de prop)</div>`;
+  }
   const info=document.getElementById('sinfo');
-  info.innerHTML = selSec ? `<b>${esc(secName(selSec))}</b> · ${vis.length} llocs` : `Tots els sectors · ${vis.length} llocs`;
+  info.innerHTML = (selSec ? `<b>${esc(secName(selSec))}</b> · ${vis.length} llocs` : `Tots els sectors · ${vis.length} llocs`) + rtxt;
   const pts = selSec ? SECTORS.find(s=>s.n===selSec).hull : vis.map(l=>l._m.getLatLng());
   if(pts.length) map.fitBounds(L.latLngBounds(pts),{padding:[24,24],maxZoom:17});
 };
@@ -812,6 +862,10 @@ const slab=document.createElement('span'); slab.className='flabel'; slab.textCon
   b.onclick=()=>{selSec=(selSec===n&&n)?0:n; applyF();};
   sbtns[n]=b; schips.appendChild(b);
 });
+const routeBtn=document.createElement('button'); routeBtn.className='chip route';
+routeBtn.innerHTML='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 3.5"><path d="M5 19c4 0 3-7 7-7s3-7 7-7"/></svg>Ruta proposada';
+routeBtn.onclick=()=>{routeOn=!routeOn; applyF();};
+schips.appendChild(routeBtn);
 applyF();
 const prog=document.getElementById('prog');
 const upd=()=>{const t=LLOCS.filter(l=>l.lat!=null);prog.textContent=`${t.filter(l=>l.visitat).length} de ${t.length} visitats`};

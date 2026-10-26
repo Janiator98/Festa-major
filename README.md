@@ -1,6 +1,6 @@
 # Ruta Festa Major · Esquerra de l'Eixample
 
-Mapa per al mòbil amb els 66 comerços i centres que es volen visitar per la festa major.
+Mapa per al mòbil amb els 66 centres de la llista principal i 88 comerços d'interès de la Gran Via (154 llocs) que es volen visitar per la festa major.
 
 **Enllaç:** https://janiator98.github.io/Festa-major/
 
@@ -16,6 +16,8 @@ Mapa per al mòbil amb els 66 comerços i centres que es volen visitar per la fe
 | Funció | Com s'utilitza |
 |---|---|
 | **Punts per prioritat** | 🔴 Alta (9) · 🟠 Mitja (40) · 🟢 Baixa (17) |
+| **Comerços** | 🟣 Punts liles més petits. La fitxa mostra el tipus d'acció (*Informativa* o *Informativa/agitació*) |
+| **Filtre de llista** | *Centres* (66) · *Comerços* (88) · *Tots*. Els comerços no tenen prioritat ni contacte: si actives aquests filtres, queden amagats |
 | **Fitxa de cada lloc** | Toca un punt i surten el tipus, el nom, l'adreça, la prioritat, el contacte i el sector |
 | **Com hi arribo** | Botó dins la fitxa que obre la ruta a peu a Google Maps |
 | **Filtre de prioritat** | Toca Alta, Mitja o Baixa per veure només aquell grup; en pots combinar més d'una. *Totes* ho torna a mostrar tot |
@@ -25,17 +27,18 @@ Mapa per al mòbil amb els 66 comerços i centres que es volen visitar per la fe
 | **Marcar com a visitat** | Botó dins la fitxa. El punt queda pàl·lid i a dalt es compten els visitats |
 | **On sóc** (⊕) | Botó de baix a la dreta. Mostra la teva ubicació i et segueix. La primera vegada cal donar permís |
 | **Veure-ho tot** (⛶) | Botó de sobre: torna a encabir tots els punts visibles |
+| **Amaga / Mostra filtres** | Botó de dalt a la dreta: plega els filtres per deixar més espai al mapa |
 
 ## Sectors
 
-| | Zona | Llocs |
-|---|---|---|
-| S1 | Parc de Joan Miró | 9 |
-| S2 | Diputació – Viladomat | 7 |
-| S3 | Universitat – Villarroel | 7 |
-| S4 | Clínic – Ninot | 17 |
-| S5 | Letamendi – Enric Granados | 11 |
-| S6 | Sagrat Cor – Diagonal | 15 |
+| | Zona | Centres | Comerços |
+|---|---|---|---|
+| S1 | Parc de Joan Miró | 9 | 20 |
+| S2 | Diputació – Viladomat | 7 | 26 |
+| S3 | Universitat – Villarroel | 7 | 42 |
+| S4 | Clínic – Ninot | 17 | – |
+| S5 | Letamendi – Enric Granados | 11 | – |
+| S6 | Sagrat Cor – Diagonal | 15 | – |
 
 ## Si alguna cosa no funciona
 
@@ -52,4 +55,6 @@ Mapa per al mòbil amb els 66 comerços i centres que es volen visitar per la fe
 - Algunes posicions són **aproximades** (a mitja illa com a molt): AstraZeneca / Edifici Estel, Mare Auxiliadora, Escola Xirinacs i Facultat de Medicina.
 - L'**Escola Entença** està situada segons OpenStreetMap, que no coincideix amb l'adreça de l'Excel (Provença 121). Cal confirmar quina és la bona.
 - El **Basic Fit** no hi és perquè no tenia adreça.
+- Comerços amb posició **aproximada** (interpolada entre números veïns): Gran Via 391, 395, 397, 417, 519, 537 i 543; Vilamarí 45 i 47; i les cantonades Entença/Gran Via i Gran Via/Viladomat.
+- Als sectors amb més de 15 parades, la ruta proposada es calcula de manera aproximada (pot no ser l'òptima exacta).
 - Mapa de fons: Esri. Adreces localitzades amb OpenStreetMap.

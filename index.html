@@ -785,7 +785,7 @@ LLOCS.forEach(l=>{
   const c = isShop(l)?SHOP:(COL[l.prioritat]||'#777');
   const m = L.circleMarker(ll,{radius:isShop(l)?7:(l.prioritat==='Alta'?11:9),color:'#fff',weight:2.5,fillColor:c,fillOpacity:0.95});
   l._badges = () => isShop(l)
-    ?`<span class="prio" style="background:${SHOP}">Acció ${esc(l.accio).toLowerCase()}</span>${l.visitat?'<span class="vis">✓ Visitat</span>':''}`
+    ?`<span class="prio" style="background:${SHOP}">Acció ${esc(l.accio).toLowerCase()}</span>${l.visitat?'<span class="vis">✓ Visitat</span>':''}<div class="cont no">Sense contacte</div>`
     : `<span class="prio" style="background:${c}">Prioritat ${esc(l.prioritat).toLowerCase()}</span>${l.visitat?'<span class="vis">✓ Visitat</span>':''}<div class="cont ${l.contacte?'si':'no'}">${l.contacte?'✓ Hi ha contacte':'Sense contacte'}</div>`;
   const gmaps='https://www.google.com/maps/dir/?api=1&travelmode=walking&destination='+encodeURIComponent(l.lat+','+l.lon);
   const html=()=>`<div class="pp"><div class="tipus">${esc(l.tipus)}</div><h3>${esc(l.nom)}</h3><div class="addr">${esc(l.adreca)}</div>${l._badges()}<div class="sec">${esc(secName(l.sector))}</div><button class="mark${l.visitat?' done':''}" data-id="${l.id}">${l.visitat?'Desmarcar visitat':'Marcar com a visitat'}</button><a class="go" href="${gmaps}" target="_blank" rel="noopener">Com hi arribo</a></div>`;
@@ -868,9 +868,9 @@ const applyF=()=>{
   Object.entries(cbtns).forEach(([k,b])=>{const on=k===selCont; b.classList.toggle('active',on); b.setAttribute('aria-pressed',on);});
   Object.entries(lbtns).forEach(([k,b])=>{const on=k===selLl; b.classList.toggle('active',on); b.setAttribute('aria-pressed',on);});
   const centreFilt=l=>shown.has(l.prioritat)&&(selCont==='tots'||(selCont==='si')===l.contacte);
-  const noCentreFilters=shown.size===ORDER.length&&selCont==='tots';
+  const shopPass=shown.size===ORDER.length&&selCont!=='si'; // els comerços compten com a 'sense contacte'
   const vis=LLOCS.filter(l=>l.lat!=null&&(!selSec||l.sector===selSec)&&(isShop(l)
-      ? (selLl!=='centres'&&noCentreFilters)
+      ? (selLl!=='centres'&&shopPass)
       : (selLl!=='comercos'&&centreFilt(l))));
   vis.forEach(l=>markers.addLayer(l._m));
   SECTORS.filter(s=>!selSec||s.n===selSec).forEach(s=>{secLayer.addLayer(s.poly);secLayer.addLayer(s.label)});
@@ -909,7 +909,7 @@ const nShop=LLOCS.filter(l=>l.lat!=null&&isShop(l)).length;
   b.onclick=()=>{selLl=(selLl===k&&k!=='tots')?'tots':k; applyF();};
   lbtns[k]=b; lchips.appendChild(b);
 });
-[['tots','Tots',''],['si','Amb contacte',nSi],['no','Sense contacte',nMap.length-nSi]].forEach(([k,t,n])=>{
+[['tots','Tots',''],['si','Amb contacte',nSi],['no','Sense contacte',nMap.length-nSi+LLOCS.filter(l=>l.lat!=null&&isShop(l)).length]].forEach(([k,t,n])=>{
   const b=document.createElement('button'); b.className='chip'; b.innerHTML=t+(n!==''?`<span class="n">${n}</span>`:'');
   b.onclick=()=>{selCont=(selCont===k&&k!=='tots')?'tots':k; applyF();};
   cbtns[k]=b; cchips.appendChild(b);

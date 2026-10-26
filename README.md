@@ -17,11 +17,11 @@ Mapa per al mòbil amb els 66 centres de la llista principal i 88 comerços d'in
 |---|---|
 | **Punts per prioritat** | 🔴 Alta (9) · 🟠 Mitja (40) · 🟢 Baixa (17) |
 | **Comerços** | 🟣 Punts liles més petits. La fitxa mostra el tipus d'acció (*Informativa* o *Informativa/agitació*) |
-| **Filtre de llista** | *Centres* (66) · *Comerços* (88) · *Tots*. Els comerços no tenen prioritat ni contacte: si actives aquests filtres, queden amagats |
+| **Filtre de llista** | *Centres* (66) · *Comerços* (88) · *Tots*. Els comerços no tenen prioritat: si actives aquest filtre, queden amagats |
 | **Fitxa de cada lloc** | Toca un punt i surten el tipus, el nom, l'adreça, la prioritat, el contacte i el sector |
 | **Com hi arribo** | Botó dins la fitxa que obre la ruta a peu a Google Maps |
 | **Filtre de prioritat** | Toca Alta, Mitja o Baixa per veure només aquell grup; en pots combinar més d'una. *Totes* ho torna a mostrar tot |
-| **Contacte** | La fitxa indica si hi ha contacte amb el lloc. El filtre *Amb contacte* (32) / *Sense contacte* (34) es combina amb els altres |
+| **Contacte** | La fitxa indica si hi ha contacte amb el lloc. El filtre *Amb contacte* (32) / *Sense contacte* (122: 34 centres + els 88 comerços) es combina amb els altres |
 | **Filtre de sector** | 6 zones per proximitat (1–6). Toca un número per fer zoom a la zona. *Tots* ho mostra tot |
 | **Ruta proposada** | Dibuixa el recorregut més curt dins de cada sector, amb les parades numerades, la distància i el temps a peu. Es recalcula amb els filtres actius |
 | **Marcar com a visitat** | Botó dins la fitxa. El punt queda pàl·lid i a dalt es compten els visitats |

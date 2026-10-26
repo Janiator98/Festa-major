@@ -31,14 +31,16 @@ Mapa per al mòbil amb els 66 centres de la llista principal i 88 comerços d'in
 
 ## Sectors
 
-| | Zona | Centres | Comerços |
-|---|---|---|---|
-| S1 | Parc de Joan Miró | 9 | 20 |
-| S2 | Diputació – Viladomat | 7 | 26 |
-| S3 | Universitat – Villarroel | 7 | 42 |
-| S4 | Clínic – Ninot | 17 | – |
-| S5 | Letamendi – Enric Granados | 11 | – |
-| S6 | Sagrat Cor – Diagonal | 15 | – |
+Sectors equilibrats per càrrega de feina (cada centre compta com 3 comerços, més el temps de caminar).
+
+| | Zona | Centres | Comerços | Ruta a peu |
+|---|---|---|---|---|
+| S1 | Joan Miró – Gran Via | 9 | 21 | 1,8 km |
+| S2 | Gran Via – Comte Borrell | 5 | 33 | 1,9 km |
+| S3 | Universitat – Gran Via | 5 | 34 | 1,2 km |
+| S4 | Clínic – Ninot | 16 | – | 1,8 km |
+| S5 | Letamendi – Enric Granados | 15 | – | 3,2 km |
+| S6 | Sagrat Cor – Diagonal | 16 | – | 2,7 km |
 
 ## Si alguna cosa no funciona
 
